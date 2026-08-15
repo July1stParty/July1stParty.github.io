@@ -1,14 +1,311 @@
-<!DOCTYPE html>
-<html lang="zh">
+<!doctype html>
+<html class="h-full overflow-y-scroll">
 <head>
-	<title>July 1st Party is a Studio</title>
+    <title>July 1st Party is a Studio</title>
+
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
+    <meta name="description" content="July1stParty Studio: Build lightweight, self-hosted services with open tech stack, privacy-first design."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta property="og:title" content="July1stParty Studio" />
+    <meta property="og:description" content="July1stParty Studio: Build lightweight, self-hosted services with open tech stack, privacy-first design." />
+    <meta property="og:url" content="https://july1stparty.github.io/" />
+    <meta property="og:type" content="website" />
+
+    <meta name="robots" content="index, follow" />
+
+    <!-- Favicon placeholder -->
     <link rel="icon" type="image/png" href="/public/icon.png">
-    <link href="/public/tailwind.css" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN (can self-host tailwind.css for production) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism for code highlight -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "July1stParty Studio",
+        "url": "https://july1stparty.github.io/"
+      }
+    </script>
+
+    <script>
+        /**
+         * Theme management logic
+         * Support system preference + manual toggle, store state in localStorage
+         * class "dark" on <html> controls dark mode
+         */
+        const getThemePreference = () => {
+            const saved = localStorage.getItem("site-theme");
+            if (saved) return saved;
+            return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        };
+
+        const applyTheme = (theme) => {
+            if (theme === "dark") {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+            localStorage.setItem("site-theme", theme);
+        };
+
+        // Apply theme BEFORE DOM fully loaded to avoid flash
+        applyTheme(getThemePreference());
+
+        /**
+         * Listen OS theme change when user has no manual selection
+         */
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+            if (!localStorage.getItem("site-theme")) {
+                applyTheme(e.matches ? "dark" : "light");
+            }
+        });
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-page {
+                @apply bg-white dark:bg-neutral-950 transition-colors duration-300;
+            }
+            .text-main {
+                @apply text-neutral-900 dark:text-neutral-100;
+            }
+            .text-sub {
+                @apply text-neutral-500 dark:text-neutral-400;
+            }
+            .border-line {
+                @apply border-neutral-200 dark:border-neutral-800;
+            }
+            .hover-card {
+                @apply hover:bg-neutral-50 dark:hover:bg-neutral-900;
+            }
+        }
+    </style>
 </head>
-<body>
-	<h1>Just a Party in July 1st</h1>
+
+<body class="antialiased min-h-screen w-full m-0 flex flex-col bg-page text-main">
+<header class="sticky top-0 z-40 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-lg underline-offset-4">
+    <nav class="flex w-full items-center justify-between px-6 py-[9px]">
+        <!-- Logo -->
+        <a href="/" class="z-50 flex items-center gap-2">
+            <div class="w-8 h-8 rounded-md bg-neutral-900 dark:bg-white flex items-center justify-center">
+                <span class="text-white dark:text-black font-bold">N</span>
+            </div>
+            <span class="text-lg font-medium">Just a Party in July 1st</span>
+        </a>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden lg:flex xl:flex-1 items-center space-x-6 ml-8 mr-6 text-base">
+            <a class="hover:underline focus:underline focus:outline-none focus:ring-0" href="/projects">Projects</a>
+            <a class="hover:underline focus:underline focus:outline-none focus:ring-0" href="/docs">Documentation</a>
+            <a class="hover:underline focus:underline focus:outline-none focus:ring-0" href="/blog">Blog</a>
+        </div>
+
+        <!-- Right Side: Theme Toggle + Action Buttons -->
+        <div class="hidden lg:flex xl:flex-1 items-center space-x-4 justify-end ml-6 xl:ml-0">
+            <button id="themeToggle" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
+                <!-- Sun Icon -->
+                <svg class="w-5 h-5 dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+                <!-- Moon Icon -->
+                <svg class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+            </button>
+            <a class="cursor-pointer rounded-full border border-line px-4 py-1.5 whitespace-nowrap hover-card" href="/github">GitHub</a>
+            <a class="cursor-pointer rounded-full bg-neutral-900 dark:bg-white text-white dark:text-black px-4 py-1.5 hover:opacity-85" href="/download">Download</a>
+        </div>
+
+        <!-- Mobile Hamburger Menu -->
+        <div class="lg:hidden flex items-center gap-3">
+            <button id="mobileThemeToggle" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10">
+                <svg class="w-5 h-5 dark:hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                </svg>
+                <svg class="w-5 h-5 hidden dark:block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+            </button>
+            <input type="checkbox" id="menu" class="peer hidden" />
+            <label for="menu" class="z-50 cursor-pointer peer-checked:hidden block">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+            </label>
+            <label for="menu" class="z-50 cursor-pointer hidden peer-checked:block fixed top-4 right-6">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </label>
+            <div class="fixed inset-0 bg-page z-40 hidden peer-checked:block overflow-y-auto pt-[5rem]">
+                <div class="flex flex-col space-y-5 px-6 text-2xl">
+                    <a href="/projects">Projects</a>
+                    <a href="/docs">Documentation</a>
+                    <a href="/blog">Blog</a>
+                    <a href="/github">GitHub</a>
+                    <a href="/download">Download</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class="mx-auto w-full max-w-4xl px-6 pb-20 pt-12 md:pb-28 md:pt-24">
+    <!-- Hero Section -->
+    <section class="mx-auto flex max-w-2xl flex-col items-center text-center">
+        <div class="w-28 h-28 rounded-2xl bg-neutral-900 dark:bg-white flex items-center justify-center">
+            <span class="text-white dark:text-black text-4xl font-bold">N</span>
+        </div>
+        <h1 class="mt-8 text-3xl font-medium leading-tight md:text-4xl">
+            Self-hosted open tools.<br />Lightweight, private, run anywhere.
+        </h1>
+        <div class="mt-8">
+            <a href="/download" class="inline-flex items-center justify-center rounded-full bg-neutral-900 dark:bg-white px-8 py-3 text-base text-white dark:text-black hover:opacity-85 transition-opacity">
+                Get Started
+            </a>
+            <p class="mt-3 text-sm text-sub">Free open source. <a href="/docs" class="underline underline-offset-4 hover:text-main">View documentation</a></p>
+        </div>
+    </section>
+
+    <!-- Feature 1: Workflow Integration -->
+    <section class="mt-24 md:mt-32">
+        <div class="grid grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-12">
+            <div>
+                <h2 class="text-2xl font-medium tracking-tight md:text-3xl">Simple workflow integration</h2>
+                <p class="mt-4 text-base leading-relaxed text-sub">
+                    Deploy services locally or in your intranet. Control everything via CLI, REST API and native libraries. No mandatory cloud connection.
+                </p>
+                <a href="/docs/api" class="mt-4 inline-block text-base text-sub underline underline-offset-4 hover:text-main">Read API Docs &rarr;</a>
+            </div>
+            <!-- Code Window -->
+            <div class="overflow-hidden rounded-lg border border-line">
+                <div class="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 px-4 py-3">
+                    <span class="h-3 w-3 rounded-full bg-red-400"></span>
+                    <span class="h-3 w-3 rounded-full bg-amber-400"></span>
+                    <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
+                </div>
+                <div class="bg-neutral-50 dark:bg-neutral-900 px-5 py-6 font-mono text-sm leading-relaxed text-sub">
+                    <p><span class="text-neutral-400">$</span> nexus serve</p>
+                    <div class="mt-4 space-y-2">
+                        <p><span>&#9656;</span> Start local service</p>
+                        <p class="ml-2">Launch file storage server</p>
+                        <p class="ml-2">Enable WebDAV endpoint</p>
+                        <p class="ml-2">Load custom permission rules</p>
+                        <p class="ml-2">More modules...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Grid Section -->
+    <section class="mt-24 md:mt-32">
+        <h2 class="text-2xl font-medium tracking-tight md:text-3xl">Core design principles</h2>
+        <div class="mt-8 grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
+            <div>
+                <p class="flex items-center gap-3 text-base font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 text-sub">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"></path>
+                    </svg>
+                    Private First
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-sub">Your data stays on your hardware, no telemetry by default.</p>
+            </div>
+            <div>
+                <p class="flex items-center gap-3 text-base font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 text-sub">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l-1.257 1.257c-.332.332-.332.87 0 1.202l1.257 1.257m16.5-3.716l1.257 1.257c.332.332.332.87 0 1.202l-1.257 1.257m-12-6l4.5 4.5 4.5-4.5"></path>
+                    </svg>
+                    Cross Platform
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-sub">Linux, Windows, macOS, ARM aarch64 native builds.</p>
+            </div>
+            <div>
+                <p class="flex items-center gap-3 text-base font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 text-sub">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Lightweight
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-sub">Low memory footprint, works well on low-spec hardware.</p>
+            </div>
+            <div>
+                <p class="flex items-center gap-3 text-base font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4 shrink-0 text-sub">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"></path>
+                    </svg>
+                    Open Source
+                </p>
+                <p class="mt-1 text-sm leading-relaxed text-sub">All core source code publicly available, self-modifiable.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Bottom Section -->
+    <section class="mt-24 md:mt-32">
+        <div class="flex flex-col items-center gap-6 text-center">
+            <h2 class="text-2xl font-medium md:text-3xl">Start self-hosting today</h2>
+            <a href="/download" class="inline-flex items-center justify-center rounded-full bg-neutral-900 dark:bg-white px-8 py-3 text-base text-white dark:text-black hover:opacity-85 transition-opacity">
+                Download
+            </a>
+        </div>
+    </section>
+</main>
+
+<footer class="mt-auto border-t border-line">
+    <div class="px-6 py-6">
+        <!-- Desktop Footer -->
+        <div class="hidden md:flex items-center justify-between">
+            <div class="text-xs text-sub">© <script>document.write(new Date().getFullYear());</script> July1stParty Studio</div>
+            <div class="flex space-x-6 text-xs text-sub">
+                <a href="/download" class="hover:underline">Download</a>
+                <a href="/blog" class="hover:underline">Blog</a>
+                <a href="/docs" class="hover:underline">Docs</a>
+                <a href="/github" class="hover:underline">GitHub</a>
+                <a href="/contact" class="hover:underline">Contact</a>
+                <a href="/privacy" class="hover:underline">Privacy</a>
+                <a href="/terms" class="hover:underline">Terms</a>
+            </div>
+        </div>
+        <!-- Mobile Footer -->
+        <div class="md:hidden">
+            <ul class="flex flex-wrap items-center justify-center text-sm text-sub gap-x-4 gap-y-2">
+                <li><a href="/download" class="hover:underline">Download</a></li>
+                <li><a href="/docs" class="hover:underline">Docs</a></li>
+                <li><a href="/github" class="hover:underline">GitHub</a></li>
+                <li><a href="/privacy" class="hover:underline">Privacy</a></li>
+                <li><a href="/terms" class="hover:underline">Terms</a></li>
+            </ul>
+            <div class="mt-3 text-center text-sm text-sub">
+                © <script>document.write(new Date().getFullYear());</script> July1stParty Studio
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    /**
+     * Theme toggle event binding
+     */
+    const switchTheme = () => {
+        const current = document.documentElement.classList.contains("dark") ? "dark" : "light";
+        const next = current === "dark" ? "light" : "dark";
+        applyTheme(next);
+    };
+    document.getElementById("themeToggle").addEventListener("click", switchTheme);
+    document.getElementById("mobileThemeToggle").addEventListener("click", switchTheme);
+
+    /**
+     * You can add prism.js here if code highlight needed
+     * <script src="prism.js"></script>
+     */
+</script>
 </body>
+	
 </html>
